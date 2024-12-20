@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 
 	_ "github.com/lib/pq"
 )
@@ -20,19 +19,18 @@ var (
 func main() {
 
 	databaseURL := os.Getenv("DATABASE_URL")
-	if databaseURL == "" {
-		err := godotenv.Load()
-		if err != nil {
-			panic(err)
-		}
 
-		DB, err = sql.Open("postgres", databaseURL)
-		defer DB.Close()
-		err = DB.Ping()
-		if err != nil {
-			panic(err)
-		}
+   DB, err = sql.Open("postgres", databaseURL)
+   if err != nil {
+		panic(err)
 	}
+
+   defer DB.Close()
+
+   err = DB.Ping()
+   if err != nil {
+      panic(err)
+   }
 
 	database.DBMigrate(DB)
 
